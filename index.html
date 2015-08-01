@@ -1,1 +1,17 @@
-YO!
+<html>
+<head>
+	<script src="Chart.min.js"></script>
+	<script src="data.json"> </script>
+</head>
+<script type="text/javascript">
+	// Get the context of the canvas element we want to select
+var init = function(){
+	var ctx = document.getElementById("chart").getContext("2d");
+	var myNewChart = new Chart(ctx).Line(data);
+	console.log('init finished');
+}
+</script>
+<body onload="init()">
+	<canvas id="chart" width="1280" height="400"></canvas>
+</body>
+</html>
