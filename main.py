@@ -16,3 +16,8 @@ for movie in movies:
 		continue
 	elif '????' not in movie:
 		fails.append(movie)
+
+import json
+out = open('data.json','w')
+out.write(json.dumps(genres))
+out.close()
