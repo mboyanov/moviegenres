@@ -80,7 +80,7 @@ var draw = function(requestedDatasets){
 		}
 	}
 	var ctx = document.getElementById("chart").getContext("2d");
-	var lineChart = new Chart(ctx).Line(finaldata,{datasetFill:false, 
+	var lineChart = new Chart(ctx).Line(finaldata,{datasetFill:false, animationSteps: 15,
 	multiTooltipTemplate: "<%= datasetLabel+':'+value %>"
 });
 }
