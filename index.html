@@ -2,16 +2,91 @@
 <head>
 	<script src="Chart.min.js"></script>
 	<script src="data.json"> </script>
+	<script src = "https://code.jquery.com/jquery-2.1.4.min.js"> </script>
+	<title> Movie History </title>
 </head>
+
 <script type="text/javascript">
+
+var labels =[];
+datasets = {};	
 	// Get the context of the canvas element we want to select
 var init = function(){
+
+	var primes = [7,11,13,17,19,23,29,31,37]
+	for (var year in data){
+		var y = parseInt(year);
+		if (y>1940 && y<2015) labels.push(y);
+	}
+	labels.sort();
+	for (var index in labels)
+	{
+		var year = labels[index];
+		for (var genre in data[year]){
+			if (datasets[genre]){
+				datasets[genre].data.push(data[year][genre]);
+			}
+			else {
+
+				var stroke1 = Math.pow(primes[Math.floor(Math.random()*9)], data[year][genre]%23+2)%255;
+				var stroke2 = Math.pow(primes[Math.floor(Math.random()*9)], data[year][genre]%23+3)%255;
+				var stroke3 = Math.pow(primes[Math.floor(Math.random()*9)], data[year][genre]%23+4)%255;
+				var color = 'rgba('+stroke1+','+stroke2+','+stroke3+',0.5)';
+				datasets[genre] ={
+					label: genre, 
+		            strokeColor: color,
+		            pointColor: color,
+					data : [data[year][genre]]
+				}
+			}
+		}
+	}
+	var initial = ["Sci-Fi","Comedy","Action","Animation"];
+	draw(initial);
+	
+	var legend ="";
+  	for (var genre in datasets){
+  		legend+='<span style=\"background-color:'+datasets[genre].strokeColor+'\">'
+  		legend += datasets[genre].label + "<input type='checkbox' onclick='redraw()' name='"+datasets[genre].label+"'";
+  		if (initial.indexOf(genre)>=0)
+		{
+			legend += ' checked'
+		}
+  		legend += "></span><br>";
+  	}
+  	$('#legend').append(legend);
+
+}
+
+var draw = function(requestedDatasets){
+	var finaldata = {};
+	finaldata.labels=labels;
+	finaldata.datasets = [];
+	for (var index in requestedDatasets)
+	{
+		if (datasets[requestedDatasets[index]])
+		{
+			finaldata.datasets.push(datasets[requestedDatasets[index]]);
+		}
+	}
 	var ctx = document.getElementById("chart").getContext("2d");
-	var myNewChart = new Chart(ctx).Line(data);
-	console.log('init finished');
+	var lineChart = new Chart(ctx).Line(finaldata,{datasetFill:false, 
+	multiTooltipTemplate: "<%= datasetLabel+':'+value %>"
+});
+}
+
+var redraw = function(){
+	var request = $('input').filter(function(){return this.checked});
+	request = request.map(function(item) { return request[item].name;})
+	draw(request);
 }
 </script>
 <body onload="init()">
-	<canvas id="chart" width="1280" height="400"></canvas>
+<center> <h1> Movie History </h1>
+<h3> or how comedy has dwarfed all other genres </h3>
+<span id ="legend" style="float:left;"> </span>
+	
+	<canvas id="chart" width="1280" height="400" style="float:left;"></canvas>
+	</center>
 </body>
 </html>
