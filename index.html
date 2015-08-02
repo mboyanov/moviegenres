@@ -76,6 +76,8 @@ var draw = function(requestedDatasets){
 }
 
 var redraw = function(){
+	$('#chart').remove(); // this is my <canvas> element
+  	$('body').append('<canvas id="chart" width="1280" height="400" style="float:left;"></canvas>');
 	var request = $('input').filter(function(){return this.checked});
 	request = request.map(function(item) { return request[item].name;})
 	draw(request);
